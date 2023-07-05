@@ -1,7 +1,7 @@
-# flask-Sec-CH-UA
+## flask-Sec-CH-UA
 Decorates flask views and enrich User-Agent header in case of reduced UA string
 
-
+## Why it's needed
 
 Starting Chrome 110 (https://developer.chrome.com/blog/user-agent-reduction-android-model-and-version/), Chrome reduced User-Agent string content sent by default by browsers in every request.
 The new UA string is will look like this:
@@ -20,3 +20,23 @@ This Flask wrapper tries to fix this by decorating a chosen Flask view, and if t
   (You can read more about those Sec-CH-UA headers here https://developer.mozilla.org/en-US/docs/Web/API/NavigatorUAData/getHighEntropyValues)
 
 The respone from the browser after the resent request will then have an encriched Flask request.user_agent including the correct device model and Android version 
+
+
+## Quickstart
+
+```
+from flask import Flask, request, redirect, abort
+from src.flask_sec_ch_ua import SecChUa, resend_request_with_ch_ua
+
+app = Flask(__name__)
+
+sec_ch_ua = SecChUa()
+sec_ch_ua.init_app(app)
+
+
+@app.route('/helloAndroidChrome110', methods=['GET'])
+@resend_request_with_ch_ua
+def hello():
+  return "Hello with enriched UA"
+```
+
